@@ -1,12 +1,12 @@
-parse-row-simple
+from-string-simple
   extensions [ csv ]
-  csv:parse-row "1,2,3" => ["1" "2" "3"]
+  csv:from-string "1,2,3" => ["1" "2" "3"]
 
-parse-row-quotes
+from-string-quotes
   extensions [ csv ]
-  csv:parse-row "\"1\",2,\"3\"" => ["1" "2" "3"]
+  csv:from-string "\"1\",2,\"3,4\"" => ["1" "2" "3,4"]
 
-parse-row-nested-quotes
+from-string-nested-quotes
   extensions [ csv ]
-  csv:parse-row "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
+  csv:from-string "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
 

@@ -11,7 +11,7 @@ import java.io.StringReader
 class CSVExtension extends DefaultClassManager {
   val format = CSVFormat.DEFAULT
 
-  object ParseRow extends DefaultReporter {
+  object FromString extends DefaultReporter {
     override def getSyntax = reporterSyntax(Array(StringType), ListType)
     override def report(args: Array[Argument], context: Context) = {
       val row = args(0).getString
@@ -19,8 +19,9 @@ class CSVExtension extends DefaultClassManager {
       LogoList.fromIterator(record.iterator.asScala)
     }
   }
+
   override def load(primManager: PrimitiveManager) = {
     val add = primManager.addPrimitive _
-    add("parse-row", ParseRow)
+    add("from-string", FromString)
   }
 }
