@@ -1,0 +1,5 @@
+*.jar
+*.swp
+target
+*.pack.gz
+
