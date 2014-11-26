@@ -1,7 +1,7 @@
 CSV-Extension
 ===
 
-This NetLogo extension adds CSV parsing capabilities to model.
+This NetLogo extension adds CSV parsing capabilities to models.
 
 ## Primitives
 
