@@ -43,7 +43,7 @@ You can use `map` and `read-from-string` to convert NetLogo literals into actual
 
 `csv:to-strings-and-numbers` _string_
 
-Parses the given string as though it were a row froma CSV file and returns it as a list of strings and numbers. This is exactly like `csv:to-strings`, but any number-like entries are converted to numbers. Anything that can't be turned into a number is left as a string. For example:
+Parses the given string as though it were a row from a CSV file and returns it as a list of strings and numbers. This is exactly like `csv:to-strings`, but any number-like entries are converted to numbers. Anything that can't be turned into a number is left as a string. For example:
 
     observer> show csv:to-strings-and-numbers "1,one,\"2\",1.5e10"
     observer: [1 "one" 2 15000000000]
