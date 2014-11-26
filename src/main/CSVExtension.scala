@@ -11,17 +11,30 @@ import java.io.StringReader
 class CSVExtension extends DefaultClassManager {
   val format = CSVFormat.DEFAULT
 
-  object FromString extends DefaultReporter {
+  trait ParserPrimitive extends DefaultReporter {
+    override def getSyntax = reporterSyntax(Array(StringType), ListType)
+    def parse(args: Array[Argument]) =
+      format.parse(new StringReader(args(0).getString)).iterator.next.iterator.asScala
+  }
+
+  object ToStrings extends ParserPrimitive {
+    override def report(args: Array[Argument], context: Context) =
+      LogoList.fromIterator(parse(args))
+  }
+
+  object ToStringsAndNumbers extends ParserPrimitive {
     override def getSyntax = reporterSyntax(Array(StringType), ListType)
     override def report(args: Array[Argument], context: Context) = {
-      val row = args(0).getString
-      val record = format.parse(new StringReader(row)).iterator.next
-      LogoList.fromIterator(record.iterator.asScala)
+      val parsedRecord: Iterator[AnyRef] = parse(args) map { entry =>
+        NumberParser.parse(entry).fold(ex => entry, identity)
+      }
+      LogoList.fromIterator(parsedRecord)
     }
   }
 
   override def load(primManager: PrimitiveManager) = {
     val add = primManager.addPrimitive _
-    add("from-string", FromString)
+    add("to-strings", ToStrings)
+    add("to-strings-and-numbers", ToStringsAndNumbers)
   }
 }

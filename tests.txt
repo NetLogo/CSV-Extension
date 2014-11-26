@@ -1,12 +1,15 @@
-from-string-simple
+to-strings-simple
   extensions [ csv ]
-  csv:from-string "1,2,3" => ["1" "2" "3"]
+  csv:to-strings "1,2,3" => ["1" "2" "3"]
 
-from-string-quotes
+to-strings-quotes
   extensions [ csv ]
-  csv:from-string "\"1\",2,\"3,4\"" => ["1" "2" "3,4"]
+  csv:to-strings "\"1\",2,\"3,4\"" => ["1" "2" "3,4"]
 
-from-string-nested-quotes
+to-strings-nested-quotes
   extensions [ csv ]
-  csv:from-string "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
+  csv:to-strings "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
 
+to-strings-and-numbers
+  extensions [ csv ]
+  csv:to-strings-and-numbers "1,one,2,\"3\",pi,e" => [1 "one" 2 3 "pi" "e"]
