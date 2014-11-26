@@ -47,3 +47,17 @@ Parses the given string as though it were a row froma CSV file and returns it as
 
     observer> show csv:to-strings-and-numbers "1,one,\"2\",1.5e10"
     observer: [1 "one" 2 15000000000]
+
+## Reading a file
+
+You can combine the functions here with NetLogo's [file handling primitives](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#fileiogroup) to read in CSV files. For example, the following reporter will parse most data files out there:
+
+    to-report read-csv-file [ file ]
+      let rows []
+      file-open file
+      while [ not file-at-end? ] [
+        set rows lput (csv:to-strings-and-numbers file-read-line) rows
+      ]
+      file-close
+      report rows
+    end
