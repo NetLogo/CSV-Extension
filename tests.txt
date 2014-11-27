@@ -19,3 +19,14 @@ to-strings-custom-delimiter
   (csv:to-strings "1\t2\t3" "\t") => ["1" "2" "3"]
   (csv:to-strings "1;2,3" ";") => ["1" "2,3"]
 
+from-list-to-string
+  extensions [ csv ]
+  csv:from-list-to-string [1 2 3] => "1,2,3"
+  csv:from-list-to-string ["one" "two" "three"] => "one,two,three"
+  csv:from-list-to-string [1 "two" "three,four"] => "1,two,\"three,four\""
+  (csv:from-list-to-string [1 2 3] "\t") => "1\t2\t3"
+
+from-list-to-readable-strings
+  extensions [ csv ]
+  csv:from-list-to-readable-string [1 2 3] => "1,2,3"
+  csv:from-list-to-readable-string ["one" "two" "three"] => "\"\"\"one\"\"\",\"\"\"two\"\"\",\"\"\"three\"\"\""

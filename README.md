@@ -62,6 +62,24 @@ To use a different delimiter, you can specify a second, optional argument. Only 
     observer> show (csv:to-strings-and-numbers "1;2;3" ";")
     observer: [1 2 3]
 
+### Writing
+
+#### from-list-to-string
+
+`csv:from-list-to-string <list>`
+
+`(csv:from-list-to-string <list> <delimiter>)`
+
+Creates a CSV representation of the given list.
+
+#### from-list-to-readable-string
+
+`csv:from-list-to-readable-string <list>`
+
+`(csv:from-list-to-string <list> <delimiter>)`
+
+Creates a CSV representation of the given list. The elements of the CSV are represented such that they may be read with `read-from-string`. This is similar to how BehaviorSpace formats CSV.
+
 ## Reading a file
 
 You can combine the functions here with NetLogo's [file handling primitives](http://ccl.northwestern.edu/netlogo/docs/dictionary.html#fileiogroup) to read in CSV files. For example, the following reporter will parse most data files out there:
