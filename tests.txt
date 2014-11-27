@@ -13,3 +13,9 @@ to-strings-nested-quotes
 to-strings-and-numbers
   extensions [ csv ]
   csv:to-strings-and-numbers "1,one,2,\"3\",pi,e" => [1 "one" 2 3 "pi" "e"]
+
+to-strings-custom-delimiter
+  extensions [ csv ]
+  (csv:to-strings "1\t2\t3" "\t") => ["1" "2" "3"]
+  (csv:to-strings "1;2,3" ";") => ["1" "2,3"]
+

@@ -12,9 +12,14 @@ class CSVExtension extends DefaultClassManager {
   val format = CSVFormat.DEFAULT
 
   trait ParserPrimitive extends DefaultReporter {
-    override def getSyntax = reporterSyntax(Array(StringType), ListType)
-    def parse(args: Array[Argument]) =
-      format.parse(new StringReader(args(0).getString)).iterator.next.iterator.asScala
+    override def getSyntax = reporterSyntax(Array(StringType | RepeatableType), ListType, 1)
+    def format(args: Array[Argument]) =
+      (args.lift(1) foldLeft CSVFormat.DEFAULT)(_ withDelimiter _.getString(0))
+
+    def parse(args: Array[Argument]) = {
+      val parsed = format(args).parse(new StringReader(args(0).getString))
+      parsed.iterator.next.iterator.asScala
+    }
   }
 
   object ToStrings extends ParserPrimitive {
