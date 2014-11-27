@@ -9,7 +9,9 @@ This NetLogo extension adds CSV parsing capabilities to models.
 
 #### to-strings
 
-`csv:to-strings` _string_
+`csv:to-strings <string>`
+
+`(csv:to-strings <string> <delimiter>)`
 
 Parses the given string as though it were a row from a CSV file and returns it as a list of strings. For example:
 
@@ -39,14 +41,26 @@ You can use `map` and `read-from-string` to convert NetLogo literals into actual
     observer> show map read-from-string csv:from-string "\"1\",\"\"\"one\"\"\""
     observer: [1 "one"]
 
+To use a different delimiter, you can specify a second, optional argument. Only single character delimiters are supported:
+
+    observer> show (csv:to-strings "1;2;3" ";")
+    observer: ["1" "2" "3"]
+
 #### to-strings-and-numbers
 
-`csv:to-strings-and-numbers` _string_
+`csv:to-strings-and-numbers <string>`
+
+`(csv:to-strings-and-numbers <string> <delimiter>)`
 
 Parses the given string as though it were a row from a CSV file and returns it as a list of strings and numbers. This is exactly like `csv:to-strings`, but any number-like entries are converted to numbers. Anything that can't be turned into a number is left as a string. For example:
 
     observer> show csv:to-strings-and-numbers "1,one,\"2\",1.5e10"
     observer: [1 "one" 2 15000000000]
+
+To use a different delimiter, you can specify a second, optional argument. Only single character delimiters are supported:
+
+    observer> show (csv:to-strings-and-numbers "1;2;3" ";")
+    observer: [1 2 3]
 
 ## Reading a file
 
