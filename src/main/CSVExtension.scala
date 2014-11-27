@@ -23,10 +23,9 @@ class CSVExtension extends DefaultClassManager {
   }
 
   object ToStringsAndNumbers extends ParserPrimitive {
-    override def getSyntax = reporterSyntax(Array(StringType), ListType)
     override def report(args: Array[Argument], context: Context) = {
       val parsedRecord: Iterator[AnyRef] = parse(args) map { entry =>
-        NumberParser.parse(entry).fold(ex => entry, identity)
+        NumberParser.parse(entry).right getOrElse entry
       }
       LogoList.fromIterator(parsedRecord)
     }
