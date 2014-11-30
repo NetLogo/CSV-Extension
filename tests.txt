@@ -1,32 +1,38 @@
 to-strings-simple
   extensions [ csv ]
-  csv:to-strings "1,2,3" => ["1" "2" "3"]
+  csv:csv-row-to-strings "1,2,3" => ["1" "2" "3"]
 
 to-strings-quotes
   extensions [ csv ]
-  csv:to-strings "\"1\",2,\"3,4\"" => ["1" "2" "3,4"]
+  csv:csv-row-to-strings "\"1\",2,\"3,4\"" => ["1" "2" "3,4"]
 
 to-strings-nested-quotes
   extensions [ csv ]
-  csv:to-strings "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
+  csv:csv-row-to-strings "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
 
 to-strings-and-numbers
   extensions [ csv ]
-  csv:to-strings-and-numbers "1,one,2,\"3\",pi,e" => [1 "one" 2 3 "pi" "e"]
+  csv:csv-row-to-strings-and-numbers "1,one,2,\"3\",pi,e" => [1 "one" 2 3 "pi" "e"]
 
 to-strings-custom-delimiter
   extensions [ csv ]
-  (csv:to-strings "1\t2\t3" "\t") => ["1" "2" "3"]
-  (csv:to-strings "1;2,3" ";") => ["1" "2,3"]
+  (csv:csv-row-to-strings "1\t2\t3" "\t") => ["1" "2" "3"]
+  (csv:csv-row-to-strings "1;2,3" ";") => ["1" "2,3"]
+
+csv-to-strings
+  extensions [ csv ]
+  csv:csv-to-strings "1,2,3\n3,4,5" => [["1" "2" "3"] ["3" "4" "5"]]
+  csv:csv-to-strings "1,2,\"3\n4\"\n5,6,7" => [["1" "2" "3\n4"] ["5" "6" "7"]]
+
 
 from-list-to-string
   extensions [ csv ]
-  csv:from-list-to-string [1 2 3] => "1,2,3"
-  csv:from-list-to-string ["one" "two" "three"] => "one,two,three"
-  csv:from-list-to-string [1 "two" "three,four"] => "1,two,\"three,four\""
-  (csv:from-list-to-string [1 2 3] "\t") => "1\t2\t3"
+  csv:list-to-csv-row [1 2 3] => "1,2,3"
+  csv:list-to-csv-row ["one" "two" "three"] => "one,two,three"
+  csv:list-to-csv-row [1 "two" "three,four"] => "1,two,\"three,four\""
+  (csv:list-to-csv-row [1 2 3] "\t") => "1\t2\t3"
 
 from-list-to-readable-strings
   extensions [ csv ]
-  csv:from-list-to-readable-string [1 2 3] => "1,2,3"
-  csv:from-list-to-readable-string ["one" "two" "three"] => "\"\"\"one\"\"\",\"\"\"two\"\"\",\"\"\"three\"\"\""
+  csv:list-to-readable-csv-row [1 2 3] => "1,2,3"
+  csv:list-to-readable-csv-row ["one" "two" "three"] => "\"\"\"one\"\"\",\"\"\"two\"\"\",\"\"\"three\"\"\""

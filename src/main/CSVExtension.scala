@@ -13,15 +13,23 @@ class CSVExtension extends DefaultClassManager {
     (delimiter foldLeft CSVFormat.DEFAULT)(_ withDelimiter _(0))
 
   def parse(str: String, format: CSVFormat) =
-    format.parse(new StringReader(str)).iterator.next.iterator.asScala
+    format.parse(new StringReader(str)).iterator.asScala map (_.iterator.asScala)
 
   def write(row: Iterator[String], format: CSVFormat) = format.format(row.toSeq:_*)
 
-  case class ParserPrimitive(parseItem: String => AnyRef) extends DefaultReporter {
+  def numberOrString(entry: String): AnyRef = NumberParser.parse(entry).right getOrElse entry
+
+  def liftParser[T](parseItem: T => AnyRef)(row: Iterator[T]): LogoList =
+    LogoList.fromIterator(row map parseItem)
+
+  case class ParserPrimitive(process: Iterator[Iterator[String]] => LogoList) extends DefaultReporter {
     override def getSyntax = reporterSyntax(Array(StringType | RepeatableType), ListType, 1)
     override def report(args: Array[Argument], context: Context) =
-      LogoList.fromIterator(parse(args(0).getString, format(args.lift(1) map (_.getString))) map parseItem)
+      process(parse(args(0).getString, format(args.lift(1) map (_.getString))))
   }
+
+  def rowParser(parseItem: String => AnyRef) = ParserPrimitive(rows => liftParser(parseItem)(rows.next))
+  def fullParser(parseItem: String => AnyRef) = ParserPrimitive(liftParser(liftParser(parseItem)))
 
   case class WriterPrimitive(dump: AnyRef => String) extends DefaultReporter {
     override def getSyntax = reporterSyntax(Array(ListType, StringType | RepeatableType), StringType, 1)
@@ -31,9 +39,11 @@ class CSVExtension extends DefaultClassManager {
 
   override def load(primManager: PrimitiveManager) = {
     val add = primManager.addPrimitive _
-    add("to-strings", ParserPrimitive(identity))
-    add("to-strings-and-numbers", ParserPrimitive { entry => NumberParser.parse(entry).right getOrElse entry })
-    add("from-list-to-string", WriterPrimitive(Dump.logoObject _))
-    add("from-list-to-readable-string", WriterPrimitive(Dump.logoObject(_, readable = true, exporting = false)))
+    add("csv-row-to-strings", rowParser(identity))
+    add("csv-row-to-strings-and-numbers", rowParser(numberOrString))
+    add("csv-to-strings", fullParser(identity))
+    add("csv-to-strings-and-numbers", fullParser(numberOrString))
+    add("list-to-csv-row", WriterPrimitive(Dump.logoObject _))
+    add("list-to-readable-csv-row", WriterPrimitive(Dump.logoObject(_, readable = true, exporting = false)))
   }
 }
