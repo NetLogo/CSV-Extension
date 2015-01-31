@@ -36,3 +36,11 @@ from-list-to-readable-strings
   extensions [ csv ]
   csv:list-to-readable-csv-row [1 2 3] => "1,2,3"
   csv:list-to-readable-csv-row ["one" "two" "three"] => "\"\"\"one\"\"\",\"\"\"two\"\"\",\"\"\"three\"\"\""
+
+csv-file-to-strings
+  extensions [ csv ]
+  csv:file-to-strings "test/simple.csv" => [["1" "2" "3"] ["4" "5" "6"] ["7" "8" "9"] ["10" "11" "12"]]
+  csv:file-to-strings "test/quotes.csv" => [["1" " \"two\"" " \"\"\"three\"\"\"" " \"four\"\"hi\""] ["\"five\"" "6" "7" "8"]]
+  csv:file-to-strings-and-numbers "test/simple.csv" => [[1 2 3] [4 5 6] [7 8 9] [10 11 12]]
+  csv:file-to-strings-and-numbers "test/quotes.csv" => [[1 " \"two\"" " \"\"\"three\"\"\"" " \"four\"\"hi\""] ["\"five\"" 6 7 8]]
+  (csv:file-to-strings-and-numbers "test/weirdlines.csv" ";") => [["this is"] ["a header"] ["whee"] ["" "one" "two" "three" ""] [1 2 3 4 5]]

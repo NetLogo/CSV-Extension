@@ -1,12 +1,16 @@
 package org.nlogo.extensions.csv
 
+import java.io
+
+import org.nlogo.nvm.ExtensionContext
+
 import scala.collection.JavaConverters._
 
 import org.nlogo.api._
 import org.nlogo.api.Syntax._
 
 import org.apache.commons.csv._
-import java.io.StringReader
+import java.io.{FileReader, StringReader}
 
 class CSVExtension extends DefaultClassManager {
   def format(delimiter: Option[String]) =
@@ -28,6 +32,17 @@ class CSVExtension extends DefaultClassManager {
       process(parse(args(0).getString, format(args.lift(1) map (_.getString))))
   }
 
+  case class FileParserPrimitive(process: Iterator[Iterator[String]] => LogoList) extends DefaultReporter {
+    override def getSyntax = reporterSyntax(Array(StringType | RepeatableType), ListType, 1)
+    override def report(args: Array[Argument], context: Context) = {
+      val filepath = context.asInstanceOf[ExtensionContext].workspace.fileManager.attachPrefix(args(0).getString)
+      val parserFormat = format(args.lift(1).map(_.getString))
+      using(new FileReader(new io.File(filepath))) { reader =>
+        process(parserFormat.parse(reader).iterator.asScala.map(_.iterator.asScala))
+      }
+    }
+  }
+
   def rowParser(parseItem: String => AnyRef) = ParserPrimitive(rows => liftParser(parseItem)(rows.next))
   def fullParser(parseItem: String => AnyRef) = ParserPrimitive(liftParser(liftParser(parseItem)))
 
@@ -43,7 +58,12 @@ class CSVExtension extends DefaultClassManager {
     add("csv-row-to-strings-and-numbers", rowParser(numberOrString))
     add("csv-to-strings", fullParser(identity))
     add("csv-to-strings-and-numbers", fullParser(numberOrString))
+    add("file-to-strings", FileParserPrimitive(liftParser(liftParser(identity))))
+    add("file-to-strings-and-numbers", FileParserPrimitive(liftParser(liftParser(numberOrString))))
     add("list-to-csv-row", WriterPrimitive(Dump.logoObject _))
     add("list-to-readable-csv-row", WriterPrimitive(Dump.logoObject(_, readable = true, exporting = false)))
   }
+
+  def using[A, B <: {def close(): Unit}] (closeable: B) (f: B => A): A =
+    try { f(closeable) } finally { closeable.close() }
 }
