@@ -7,7 +7,7 @@ This NetLogo extension adds CSV parsing capabilities to models.
 
 ### Read a file all at once
 
-Just use `csv:file-to-strings-and-numbers "/path/to/myfile.csv"! See [file-to-strings](#file-to-strings) and
+Just use `csv:file-to-strings-and-numbers "/path/to/myfile.csv"`! See [file-to-strings](#file-to-strings) and
 [file-to-strings-and-numbers](#file-to-strings-and-numbers) for more information.
 
 ### Read a file one line at a time
