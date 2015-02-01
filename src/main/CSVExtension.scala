@@ -10,7 +10,7 @@ import org.nlogo.api._
 import org.nlogo.api.Syntax._
 
 import org.apache.commons.csv._
-import java.io.{FileReader, StringReader}
+import java.io.{FileNotFoundException, IOException, FileReader, StringReader}
 
 class CSVExtension extends DefaultClassManager {
   def format(delimiter: Option[String]) =
@@ -37,8 +37,13 @@ class CSVExtension extends DefaultClassManager {
     override def report(args: Array[Argument], context: Context) = {
       val filepath = context.asInstanceOf[ExtensionContext].workspace.fileManager.attachPrefix(args(0).getString)
       val parserFormat = format(args.lift(1).map(_.getString))
-      using(new FileReader(new io.File(filepath))) { reader =>
-        process(parserFormat.parse(reader).iterator.asScala.map(_.iterator.asScala))
+      try {
+        using(new FileReader(new io.File(filepath))) { reader =>
+          process(parserFormat.parse(reader).iterator.asScala.map(_.iterator.asScala))
+        }
+      } catch {
+        case e: FileNotFoundException => throw new ExtensionException("Couldn't find file: " + filepath, e)
+        case e: IOException => throw new ExtensionException("Couldn't open file: " + filepath, e)
       }
     }
   }

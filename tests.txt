@@ -44,3 +44,4 @@ csv-file-to-strings
   csv:file-to-strings-and-numbers "test/simple.csv" => [[1 2 3] [4 5 6] [7 8 9] [10 11 12]]
   csv:file-to-strings-and-numbers "test/quotes.csv" => [[1 " \"two\"" " \"\"\"three\"\"\"" " \"four\"\"hi\""] ["\"five\"" 6 7 8]]
   (csv:file-to-strings-and-numbers "test/weirdlines.csv" ";") => [["this is"] ["a header"] ["whee"] ["" "one" "two" "three" ""] [1 2 3 4 5]]
+  csv:file-to-strings "test/idontexist.csv" => ERROR Extension exception: Couldn't find file: test/idontexist.csv
