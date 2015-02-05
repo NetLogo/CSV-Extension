@@ -48,7 +48,14 @@ class CSVExtension extends DefaultClassManager {
     }
   }
 
-  def rowParser(parseItem: String => AnyRef) = ParserPrimitive(rows => liftParser(parseItem)(rows.next))
+  def rowParser(parseItem: String => AnyRef) = ParserPrimitive { rows =>
+    try {
+      liftParser(parseItem)(rows.next())
+    } catch {
+      case (e: NoSuchElementException) => LogoList("")
+    }
+  }
+
   def fullParser(parseItem: String => AnyRef) = ParserPrimitive(liftParser(liftParser(parseItem)))
 
   case class WriterPrimitive(dump: AnyRef => String) extends DefaultReporter {

@@ -1,20 +1,24 @@
-to-strings-simple
+row-to-strings-simple
   extensions [ csv ]
   csv:csv-row-to-strings "1,2,3" => ["1" "2" "3"]
 
-to-strings-quotes
+row-to-strings-empty
+  extensions [ csv ]
+  csv:csv-row-to-strings "" => [""]
+
+row-to-strings-quotes
   extensions [ csv ]
   csv:csv-row-to-strings "\"1\",2,\"3,4\"" => ["1" "2" "3,4"]
 
-to-strings-nested-quotes
+row-to-strings-nested-quotes
   extensions [ csv ]
   csv:csv-row-to-strings "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
 
-to-strings-and-numbers
+row-to-strings-and-numbers
   extensions [ csv ]
   csv:csv-row-to-strings-and-numbers "1,one,2,\"3\",pi,e" => [1 "one" 2 3 "pi" "e"]
 
-to-strings-custom-delimiter
+row-to-strings-custom-delimiter
   extensions [ csv ]
   (csv:csv-row-to-strings "1\t2\t3" "\t") => ["1" "2" "3"]
   (csv:csv-row-to-strings "1;2,3" ";") => ["1" "2,3"]
@@ -24,6 +28,9 @@ csv-to-strings
   csv:csv-to-strings "1,2,3\n3,4,5" => [["1" "2" "3"] ["3" "4" "5"]]
   csv:csv-to-strings "1,2,\"3\n4\"\n5,6,7" => [["1" "2" "3\n4"] ["5" "6" "7"]]
 
+csv-to-strings-empty
+  extensions [ csv ]
+  csv:csv-to-strings "" => []
 
 from-list-to-string
   extensions [ csv ]
