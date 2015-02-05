@@ -21,7 +21,11 @@ class CSVExtension extends DefaultClassManager {
 
   def write(row: Iterator[String], format: CSVFormat) = format.format(row.toSeq:_*)
 
-  def numberOrString(entry: String): AnyRef = NumberParser.parse(entry).right getOrElse entry
+  def numberOrString(entry: String): AnyRef = NumberParser.parse(entry).right getOrElse (entry.toUpperCase match {
+    case "TRUE"  => true:  java.lang.Boolean
+    case "FALSE" => false: java.lang.Boolean
+    case _       => entry
+  })
 
   def liftParser[T](parseItem: T => AnyRef)(row: Iterator[T]): LogoList =
     LogoList.fromIterator(row map parseItem)

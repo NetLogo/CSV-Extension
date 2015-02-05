@@ -23,6 +23,10 @@ row-to-strings-custom-delimiter
   (csv:csv-row-to-strings "1\t2\t3" "\t") => ["1" "2" "3"]
   (csv:csv-row-to-strings "1;2,3" ";") => ["1" "2,3"]
 
+literal-support
+  extensions [ csv ]
+  csv:csv-row-to-strings-and-numbers "true,1,1e3,-1.100,false,FALSE,False" => [true 1 1000 -1.1 false false false]
+
 csv-to-strings
   extensions [ csv ]
   csv:csv-to-strings "1,2,3\n3,4,5" => [["1" "2" "3"] ["3" "4" "5"]]
