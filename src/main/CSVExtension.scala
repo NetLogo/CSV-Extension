@@ -10,7 +10,7 @@ import org.nlogo.api._
 import org.nlogo.api.Syntax._
 
 import org.apache.commons.csv._
-import java.io.{FileNotFoundException, IOException, FileReader, StringReader}
+import java.io._
 
 class CSVExtension extends DefaultClassManager {
   def format(delimiter: Option[String]) =
@@ -21,7 +21,7 @@ class CSVExtension extends DefaultClassManager {
 
   def write(row: Iterator[String], format: CSVFormat) = format.format(row.toSeq:_*)
 
-  def numberOrString(entry: String): AnyRef = NumberParser.parse(entry).right getOrElse (entry.toUpperCase match {
+  def parseValue(entry: String): AnyRef = NumberParser.parse(entry).right getOrElse (entry.toUpperCase match {
     case "TRUE"  => true:  java.lang.Boolean
     case "FALSE" => false: java.lang.Boolean
     case _       => entry
@@ -70,14 +70,10 @@ class CSVExtension extends DefaultClassManager {
 
   override def load(primManager: PrimitiveManager) = {
     val add = primManager.addPrimitive _
-    add("csv-row-to-strings", rowParser(identity))
-    add("csv-row-to-strings-and-numbers", rowParser(numberOrString))
-    add("csv-to-strings", fullParser(identity))
-    add("csv-to-strings-and-numbers", fullParser(numberOrString))
-    add("file-to-strings", FileParserPrimitive(liftParser(liftParser(identity))))
-    add("file-to-strings-and-numbers", FileParserPrimitive(liftParser(liftParser(numberOrString))))
-    add("list-to-csv-row", WriterPrimitive(Dump.logoObject _))
-    add("list-to-readable-csv-row", WriterPrimitive(Dump.logoObject(_, readable = true, exporting = false)))
+    add("from-line", rowParser(parseValue))
+    add("from-string", fullParser(parseValue))
+    add("from-file", FileParserPrimitive(liftParser(liftParser(parseValue))))
+    add("to-line", WriterPrimitive(Dump.logoObject))
   }
 
   def using[A, B <: {def close(): Unit}] (closeable: B) (f: B => A): A =

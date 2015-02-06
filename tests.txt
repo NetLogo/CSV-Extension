@@ -1,58 +1,43 @@
-row-to-strings-simple
+from-line-simple
   extensions [ csv ]
-  csv:csv-row-to-strings "1,2,3" => ["1" "2" "3"]
+  csv:from-line "1,2,3" => [1 2 3]
 
-row-to-strings-empty
+from-line-empty
   extensions [ csv ]
-  csv:csv-row-to-strings "" => [""]
+  csv:from-line "" => [""]
 
-row-to-strings-quotes
+from-line-nested-quotes
   extensions [ csv ]
-  csv:csv-row-to-strings "\"1\",2,\"3,4\"" => ["1" "2" "3,4"]
+  csv:from-line "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
 
-row-to-strings-nested-quotes
+from-line-custom-delimiter
   extensions [ csv ]
-  csv:csv-row-to-strings "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
+  (csv:from-line "1\t2\t3" "\t") => [1 2 3]
+  (csv:from-line "1;2,3" ";") => [1 "2,3"]
 
-row-to-strings-and-numbers
+from-line-literal-support
   extensions [ csv ]
-  csv:csv-row-to-strings-and-numbers "1,one,2,\"3\",pi,e" => [1 "one" 2 3 "pi" "e"]
+  csv:from-line "true,1,1e3,-1.100,false,FALSE,False" => [true 1 1000 -1.1 false false false]
 
-row-to-strings-custom-delimiter
+from-string
   extensions [ csv ]
-  (csv:csv-row-to-strings "1\t2\t3" "\t") => ["1" "2" "3"]
-  (csv:csv-row-to-strings "1;2,3" ";") => ["1" "2,3"]
+  csv:from-string "1,2,3\n3,4,5" => [[1 2 3] [3 4 5]]
+  csv:from-string "1,2,\"3\n4\"\n5,6,7" => [[1 2 "3\n4"] [5 6 7]]
 
-literal-support
+from-string-empty
   extensions [ csv ]
-  csv:csv-row-to-strings-and-numbers "true,1,1e3,-1.100,false,FALSE,False" => [true 1 1000 -1.1 false false false]
+  csv:from-string "" => []
 
-csv-to-strings
+to-string
   extensions [ csv ]
-  csv:csv-to-strings "1,2,3\n3,4,5" => [["1" "2" "3"] ["3" "4" "5"]]
-  csv:csv-to-strings "1,2,\"3\n4\"\n5,6,7" => [["1" "2" "3\n4"] ["5" "6" "7"]]
+  csv:to-line [1 2 3] => "1,2,3"
+  csv:to-line ["one" "two" "three"] => "one,two,three"
+  csv:to-line [1 "two" "three,four"] => "1,two,\"three,four\""
+  (csv:to-line [1 2 3] "\t") => "1\t2\t3"
 
-csv-to-strings-empty
+from-file
   extensions [ csv ]
-  csv:csv-to-strings "" => []
-
-from-list-to-string
-  extensions [ csv ]
-  csv:list-to-csv-row [1 2 3] => "1,2,3"
-  csv:list-to-csv-row ["one" "two" "three"] => "one,two,three"
-  csv:list-to-csv-row [1 "two" "three,four"] => "1,two,\"three,four\""
-  (csv:list-to-csv-row [1 2 3] "\t") => "1\t2\t3"
-
-from-list-to-readable-strings
-  extensions [ csv ]
-  csv:list-to-readable-csv-row [1 2 3] => "1,2,3"
-  csv:list-to-readable-csv-row ["one" "two" "three"] => "\"\"\"one\"\"\",\"\"\"two\"\"\",\"\"\"three\"\"\""
-
-csv-file-to-strings
-  extensions [ csv ]
-  csv:file-to-strings "test/simple.csv" => [["1" "2" "3"] ["4" "5" "6"] ["7" "8" "9"] ["10" "11" "12"]]
-  csv:file-to-strings "test/quotes.csv" => [["1" " \"two\"" " \"\"\"three\"\"\"" " \"four\"\"hi\""] ["\"five\"" "6" "7" "8"]]
-  csv:file-to-strings-and-numbers "test/simple.csv" => [[1 2 3] [4 5 6] [7 8 9] [10 11 12]]
-  csv:file-to-strings-and-numbers "test/quotes.csv" => [[1 " \"two\"" " \"\"\"three\"\"\"" " \"four\"\"hi\""] ["\"five\"" 6 7 8]]
-  (csv:file-to-strings-and-numbers "test/weirdlines.csv" ";") => [["this is"] ["a header"] ["whee"] ["" "one" "two" "three" ""] [1 2 3 4 5]]
-  csv:file-to-strings "test/idontexist.csv" => ERROR Extension exception: Couldn't find file: test/idontexist.csv
+  csv:from-file "test/simple.csv" => [[1 2 3] [4 5 6] [7 8 9] [10 11 12]]
+  csv:from-file "test/quotes.csv" => [[1 "two" "\"three\"" "four\"hi"] ["\"five\"" 6 7 8]]
+  (csv:from-file "test/weirdlines.csv" ";") => [["this is"] ["a header"] ["whee"] ["" "one" "two" "three" ""] [1 2 3 4 5]]
+  csv:from-file "test/idontexist.csv" => ERROR Extension exception: Couldn't find file: test/idontexist.csv
