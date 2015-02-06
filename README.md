@@ -7,8 +7,7 @@ This NetLogo extension adds CSV parsing capabilities to models.
 
 ### Read a file all at once
 
-Just use `csv:file-to-strings-and-numbers "/path/to/myfile.csv"`! See [file-to-strings](#file-to-strings) and
-[file-to-strings-and-numbers](#file-to-strings-and-numbers) for more information.
+Just use `csv:from-file "/path/to/myfile.csv"`! See [from-file](#from-file) for more information.
 
 ### Read a file one line at a time
 
@@ -17,9 +16,9 @@ time. For instance, if you want to sum each of the columns of a numeric CSV file
 
     to-report sum-columns [ file ]
       file-open file
-      set result csv:csv-row-to-numbers-and-strings file-read-line
+      set result csv:from-line file-read-line
       while [ not file-at-end? ] [
-        let row csv:csv-row-to-numbers-and-strings
+        let row csv:from-line file-read-line
         set result (map [?1 + ?2] result row)
       ]
       file-close
@@ -44,22 +43,26 @@ Here's an example model that reads in a file one line per tick:
 
     to go
       if file-at-end? [ stop ]
-      set data csv:csv-row-to-numbers-and-strings file-read-line
+      set data csv:from-line file-read-line
       % model update goes here
       tick
     end
+
+### Write a file
+
+Just use `csv:to-file "/path/to/myfile.csv" my-data`! See [to-file](#to-file) for more information.
 
 ## Primitives
 
 ### Reading
 
-#### csv-row-to-strings
+#### from-line
 
-`csv:csv-row-to-strings <string>`
+`csv:from-line <string>`
 
-`(csv:csv-row-to-strings <string> <delimiter>)`
+`(csv:from-line <string> <delimiter>)`
 
-Parses the given string as though it were a row from a CSV file and returns it as a list of strings. For example:
+Parses the given string as though it were a row from a CSV file and returns it as a list of values. For example:
 
     observer> show csv:csv-row-to-strings "one,two,three"
     observer: ["one" "two" "three"]
@@ -71,72 +74,48 @@ Quotes can be used when items contain commas:
 
 You can put two quotes in a row to put an actual quote in an entry. If the entry is not quoted, you can just use one quote:
 
-    observer> foreach (csv:csv-row-to-strings "he said \"hi there\",\"afterwards, she said \"\"hello\"\"\"") print
+    observer> foreach (csv:from-line "he said \"hi there\",\"afterwards, she said \"\"hello\"\"\"") print
     he said "hi there"
     afterwards, she said "hello"
 
-The list will keep all items as strings:
+Number-like-entries will be parsed as numbers:
 
-    observer> show csv:csv-row-to-strings "1,2,3"
-    observer: ["1" "2" "3"]
+    observer> show csv:from-line "1,-2.5,1e3"
+    observer: [1 -2.5 1000]
 
-You can use `map` and `read-from-string` to convert NetLogo literals into actual literals. This technique is only useful if you're dealing with actual NetLogo literals. [`csv:to-string-and-numbers`](#row-to-strings-and-numbers) should cover most use cases:
+`true` and `false` with any capitalization will be parsed as booleans:
 
-    observer> show map read-from-string csv:from-string "1,2,3"
-    observer: [1 2 3]
-    observer> show map read-from-string csv:from-string "\"1\",\"\"\"one\"\"\""
-    observer: [1 "one"]
+    observer> show csv:from-line "true,TRUE,False,falsE"
+    observer: [true true false false]
 
 To use a different delimiter, you can specify a second, optional argument. Only single character delimiters are supported:
 
     observer> show (csv:csv-row-to-strings "1;2;3" ";")
-    observer: ["1" "2" "3"]
-
-#### csv-row-to-strings-and-numbers
-
-`csv:csv-row-to-strings-and-numbers <string>`
-
-`(csv:csv-row-to-strings-and-numbers <string> <delimiter>)`
-
-Parses the given string as though it were a row from a CSV file and returns it as a list of strings and numbers. This is exactly like `csv:csv-row-to-strings`, but any number-like entries are converted to numbers. Anything that can't be turned into a number is left as a string. For example:
-
-    observer> show csv:csv-row-to-strings-and-numbers "1,one,\"2\",1.5e10"
-    observer: [1 "one" 2 15000000000]
-
-To use a different delimiter, you can specify a second, optional argument. Only single character delimiters are supported:
-
-    observer> show (csv:csv-row-to-strings-and-numbers "1;2;3" ";")
     observer: [1 2 3]
 
-#### csv-to-strings
+Different types of values can be mixed freely:
 
-`csv:csv-to-strings <string>`
+    observer> show csv:from-line "one,2,true"
+    observer: ["one" 2 true]
 
-`(csv:csv-to-strings <string> <delimiter>)`
+#### from-string
 
-Parses a string representation of one or more CSV rows and returns it as a list of lists of strings. For example:
+`csv:from-string <string>`
 
-    observer> show csv:csv-to-strings "1,two,3\nfour,5,six"
-    observer: [["1" "two" "3"] ["four" "5" "six"]]
+`(csv:from-string <string> <delimiter>)`
 
-#### csv-to-strings-and-numbers
+Parses a string representation of one or more CSV rows and returns it as a list of lists of values. For example:
 
-`csv:csv-to-strings-and-numbers <string>`
+    observer> show csv:csv-to-strings "1,two,3\nfour,5,true"
+    observer: [[1 "two" 3] ["four" 5 true]]
 
-`(csv:csv-to-strings-and-numbers <string> <delimiter>)`
+#### from-file
 
-Like `csv:csv-to-strings`, but will parse number-like items as numbers. For example:
+`csv:from-file <string>`
 
-    observer> show csv:csv-to-strings-and-numbers "1,two,3\nfour,5,six"
-    observer: [[1 "two" 3] ["four" 5 "six"]]
+`(csv:from-file <string> <delimiter)`
 
-#### file-to-strings
-
-`csv:file-to-strings <string>`
-
-`(csv:file-to-strings <string> <delimiter)`
-
-Parses an entire CSV file to a list of lists of strings. For example, if we have a file `example.csv` that contains:
+Parses an entire CSV file to a list of lists of values. For example, if we have a file `example.csv` that contains:
 
     1,2,3
     4,5,6
@@ -146,7 +125,7 @@ Parses an entire CSV file to a list of lists of strings. For example, if we have
 Then, we get:
 
     observer> show csv:file-to-strings "example.csv"
-    observer: [["1" "2" "3"] ["4" "5" "6"] ["7" "8" "9"] ["10" "11" "12"]]
+    observer: [[1 2 3] [4 5 6] [7 8 9] [10 11 12]]
 
 The parser doesn't care if the rows have different numbers of items on them. The number of items in the rows list
 will always be `<number of delimiters> + 1`, though blank lines are skipped. This makes handling files with headers
@@ -156,8 +135,8 @@ quite easy. For instance, if we have `header.csv` that contains:
     2/1/2015
 
     Parameters:
-    start,stop,resolution,population
-    0,4,1,100
+    start,stop,resolution,population,birth?
+    0,4,1,100,true
 
     Data:
     time,x,y
@@ -173,39 +152,50 @@ This gives:
     observer: ["My Data"]
     observer: ["2/1/2015"]
     observer: ["Parameters:"]
-    observer: ["start" "stop" "resolution" "population"]
-    observer: ["0" "4" "1" "100"]
+    observer: ["start" "stop" "resolution" "population" "birth?"]
+    observer: [0 4 1 100 true]
     observer: ["Data:"]
     observer: ["time" "x" "y"]
-    observer: ["0" "0" "0"]
-    observer: ["1" "1" "1"]
-    observer: ["2" "4" "8"]
-    observer: ["3" "9" "27"]
-
-
-#### file-to-strings-and-numbers
-
-`csv:file-to-strings-and-numbers <string>`
-
-`(csv:file-to-strings-and-numbers <string> <delimiter)`
-
-Exactly like `csv:file-to-strings`, except that number-like items are parsed as numbers.
+    observer: [0 0 0]
+    observer: [1 1 1]
+    observer: [2 4 8]
+    observer: [3 9 27]
 
 ### Writing
 
-#### list-to-csv-row
+#### to-line
 
-`csv:list-to-csv-row <list>`
+`csv:to-line <list>`
 
-`(csv:list-to-csv-row <list> <delimiter>)`
+`(csv:to-line <list> <delimiter>)`
 
-Creates a CSV representation of the given list.
+Reports the given list as a CSV row. For example:
 
-#### list-to-readable-csv-row
+    observer> show csv:to-line ["one" 2 true]
+    observer: "one,2,true"
 
-`csv:list-to-readable-csv-row <list>`
+#### to-string
 
-`(csv:list-to-csv-row <list> <delimiter>)`
+`csv:to-string <list>`
 
-Creates a CSV representation of the given list. The elements of the CSV are represented such that they may be read with `read-from-csv-row`. This is similar to how BehaviorSpace formats CSV.
+`(csv:to-string <list> <delimiter>)`
 
+Reports the given list of lists as a CSV string. For example:
+
+    observer> show csv:to-string [[1 "two" 3] [4 5]]
+    observer: "1,two,3\n4,5"
+
+#### to-file
+
+`csv:to-file <string> <list>`
+
+`(csv:to-file <string> <list> <delimiter>)`
+
+Writes the given list of lists to a new CSV file. For example:
+
+    observer> csv:to-file "myfile.csv" [[1 "two" 3] [4 5]]
+
+will result in a file `myfile.csv` containing:
+
+    1,two,3
+    4,5
