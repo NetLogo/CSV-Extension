@@ -1,4 +1,4 @@
-scalaVersion := "2.9.2"
+scalaVersion := "2.10.4"
 
 scalaSource in Compile := baseDirectory.value / "src" / "main"
 
@@ -14,8 +14,8 @@ scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings",
 retrieveManaged := true
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "NetLogo" % "5.1.0" from
-    "http://ccl.northwestern.edu/netlogo/5.1.0/NetLogo.jar",
+  "org.nlogo" % "NetLogoHeadless" % "6.0-M1" from
+    "http://ccl.northwestern.edu/devel/6.0-M1/NetLogoHeadless.jar",
     "com.github.tototoshi" %% "scala-csv" % "1.0.0",
     "org.apache.commons" % "commons-csv" % "1.0"
 )
@@ -23,7 +23,7 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
   "org.nlogo" % "NetLogo-tests" % "5.1.0" % "test" from
     "http://ccl.northwestern.edu/netlogo/5.1.0/NetLogo-tests.jar",
-  "org.scalatest" %% "scalatest" % "1.8" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.picocontainer" % "picocontainer" % "2.13.6" % "test",
   "asm" % "asm-all" % "3.3.1" % "test"
 )
