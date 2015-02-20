@@ -42,20 +42,12 @@ packageBin in Compile := {
   val base = baseDirectory.value
   val s = streams.value
   IO.copyFile(jar, base / "csv.jar")
-  def pack200(name: String) {
-    Process(sys.env("JAVA_HOME") + "/bin/pack200 " +
-            "--modification-time=latest --effort=9 --strip-debug " +
-            "--no-keep-file-order --unknown-attribute=strip " +
-            name + ".pack.gz " + name).!!
-  }
-  pack200("csv.jar")
   val libraryJarPaths =
     classpath.files.filter{path =>
       path.getName.endsWith(".jar") &&
       !path.getName.startsWith("scala-library")}
   for(path <- libraryJarPaths) {
     IO.copyFile(path, base / path.getName)
-    pack200(path.getName)
   }
   if(Process("git diff --quiet --exit-code HEAD").! == 0) {
     // copy everything thing we need for distribution in
@@ -65,7 +57,7 @@ packageBin in Compile := {
     val zipExtras =
       (libraryJarPaths.map(_.getName) :+ "csv.jar")
         .filterNot(_ contains "NetLogo")
-        .flatMap{ jar => Seq(jar, jar + ".pack.gz") }
+        .flatMap{ jar => Seq(jar) }
     for(extra <- zipExtras)
       IO.copyFile(base / extra, base / "csv" / extra)
     for (dir <- Seq("alternate-netlogolite", "demo"))
@@ -88,6 +80,5 @@ test in Test := {
 cleanFiles ++= {
   val base = baseDirectory.value
   Seq(base / "csv.jar",
-      base / "csv.jar.pack.gz",
       base / "csv.zip")
 }
