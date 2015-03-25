@@ -1,23 +1,23 @@
-from-line-simple
+from-row-simple
   extensions [ csv ]
-  csv:from-line "1,2,3" => [1 2 3]
+  csv:from-row "1,2,3" => [1 2 3]
 
-from-line-empty
+from-row-empty
   extensions [ csv ]
-  csv:from-line "" => [""]
+  csv:from-row "" => [""]
 
-from-line-nested-quotes
+from-row-nested-quotes
   extensions [ csv ]
-  csv:from-line "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
+  csv:from-row "\"\"\"quoted string\"\"\",\"inner\"\"quote\",\"escaped\\\"\"quote\"" => ["\"quoted string\"" "inner\"quote" "escaped\\\"quote"]
 
-from-line-custom-delimiter
+from-row-custom-delimiter
   extensions [ csv ]
-  (csv:from-line "1\t2\t3" "\t") => [1 2 3]
-  (csv:from-line "1;2,3" ";") => [1 "2,3"]
+  (csv:from-row "1\t2\t3" "\t") => [1 2 3]
+  (csv:from-row "1;2,3" ";") => [1 "2,3"]
 
-from-line-literal-support
+from-row-literal-support
   extensions [ csv ]
-  csv:from-line "true,1,1e3,-1.100,false,FALSE,False" => [true 1 1000 -1.1 false false false]
+  csv:from-row "true,1,1e3,-1.100,false,FALSE,False" => [true 1 1000 -1.1 false false false]
 
 from-string
   extensions [ csv ]
@@ -35,14 +35,14 @@ from-file
   (csv:from-file "test/weirdlines.csv" ";") => [["this is"] ["a header"] ["whee"] ["" "one" "two" "three" ""] [1 2 3 4 5]]
   csv:from-file "test/idontexist.csv" => ERROR Extension exception: Couldn't find file: test/idontexist.csv
 
-to-line
+to-row
   extensions [ csv ]
-  csv:to-line [] => ""
-  csv:to-line [1 2 3] => "1,2,3"
-  csv:to-line ["one" "two" "three"] => "one,two,three"
-  csv:to-line [1 "two" "three,four"] => "1,two,\"three,four\""
-  (csv:to-line [1 2 3] "\t") => "1\t2\t3"
-  csv:to-line ["\"foo\""] => "\"\"\"foo\"\"\""
+  csv:to-row [] => ""
+  csv:to-row [1 2 3] => "1,2,3"
+  csv:to-row ["one" "two" "three"] => "one,two,three"
+  csv:to-row [1 "two" "three,four"] => "1,two,\"three,four\""
+  (csv:to-row [1 2 3] "\t") => "1\t2\t3"
+  csv:to-row ["\"foo\""] => "\"\"\"foo\"\"\""
 
 to-string
   extensions [ csv ]

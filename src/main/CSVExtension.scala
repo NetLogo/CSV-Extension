@@ -98,10 +98,10 @@ class CSVExtension extends DefaultClassManager {
 
   override def load(primManager: PrimitiveManager) = {
     val add = primManager.addPrimitive _
-    add("from-line", rowParser(parseValue))
+    add("from-row", rowParser(parseValue))
     add("from-string", fullParser(parseValue))
     add("from-file", FileParserPrimitive(lift(lift(parseValue))))
-    add("to-line", ToLine(Dump.logoObject))
+    add("to-row", ToLine(Dump.logoObject))
     add("to-string", ToString(Dump.logoObject))
     add("to-file", ToFile(Dump.logoObject))
   }

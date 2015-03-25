@@ -16,9 +16,9 @@ time. For instance, if you want to sum each of the columns of a numeric CSV file
 
     to-report sum-columns [ file ]
       file-open file
-      set result csv:from-line file-read-line
+      set result csv:from-row file-read-line
       while [ not file-at-end? ] [
-        let row csv:from-line file-read-line
+        let row csv:from-row file-read-line
         set result (map [?1 + ?2] result row)
       ]
       file-close
@@ -43,7 +43,7 @@ Here's an example model that reads in a file one line per tick:
 
     to go
       if file-at-end? [ stop ]
-      set data csv:from-line file-read-line
+      set data csv:from-row file-read-line
       % model update goes here
       tick
     end
@@ -56,11 +56,11 @@ Just use `csv:to-file "/path/to/myfile.csv" my-data`! See [to-file](#to-file) fo
 
 ### Reading
 
-#### from-line
+#### from-row
 
-`csv:from-line <string>`
+`csv:from-row <string>`
 
-`(csv:from-line <string> <delimiter>)`
+`(csv:from-row <string> <delimiter>)`
 
 Parses the given string as though it were a row from a CSV file and returns it as a list of values. For example:
 
@@ -74,18 +74,18 @@ Quotes can be used when items contain commas:
 
 You can put two quotes in a row to put an actual quote in an entry. If the entry is not quoted, you can just use one quote:
 
-    observer> foreach (csv:from-line "he said \"hi there\",\"afterwards, she said \"\"hello\"\"\"") print
+    observer> foreach (csv:from-row "he said \"hi there\",\"afterwards, she said \"\"hello\"\"\"") print
     he said "hi there"
     afterwards, she said "hello"
 
 Number-like-entries will be parsed as numbers:
 
-    observer> show csv:from-line "1,-2.5,1e3"
+    observer> show csv:from-row "1,-2.5,1e3"
     observer: [1 -2.5 1000]
 
 `true` and `false` with any capitalization will be parsed as booleans:
 
-    observer> show csv:from-line "true,TRUE,False,falsE"
+    observer> show csv:from-row "true,TRUE,False,falsE"
     observer: [true true false false]
 
 To use a different delimiter, you can specify a second, optional argument. Only single character delimiters are supported:
@@ -95,7 +95,7 @@ To use a different delimiter, you can specify a second, optional argument. Only 
 
 Different types of values can be mixed freely:
 
-    observer> show csv:from-line "one,2,true"
+    observer> show csv:from-row "one,2,true"
     observer: ["one" 2 true]
 
 #### from-string
@@ -163,15 +163,15 @@ This gives:
 
 ### Writing
 
-#### to-line
+#### to-row
 
-`csv:to-line <list>`
+`csv:to-row <list>`
 
-`(csv:to-line <list> <delimiter>)`
+`(csv:to-row <list> <delimiter>)`
 
 Reports the given list as a CSV row. For example:
 
-    observer> show csv:to-line ["one" 2 true]
+    observer> show csv:to-row ["one" 2 true]
     observer: "one,2,true"
 
 #### to-string
