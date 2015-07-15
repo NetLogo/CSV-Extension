@@ -30,10 +30,10 @@ from-string-empty
 
 from-file
   extensions [ csv ]
-  csv:from-file "test/simple.csv" => [[1 2 3] [4 5 6] [7 8 9] [10 11 12]]
-  csv:from-file "test/quotes.csv" => [[1 "two" "\"three\"" "four\"hi"] ["\"five\"" 6 7 8]]
-  (csv:from-file "test/weirdlines.csv" ";") => [["this is"] ["a header"] ["whee"] ["" "one" "two" "three" ""] [1 2 3 4 5]]
-  csv:from-file "test/idontexist.csv" => ERROR Extension exception: Couldn't find file: test/idontexist.csv
+  csv:from-file "extensions/csv/test/simple.csv" => [[1 2 3] [4 5 6] [7 8 9] [10 11 12]]
+  csv:from-file "extensions/csv/test/quotes.csv" => [[1 "two" "\"three\"" "four\"hi"] ["\"five\"" 6 7 8]]
+  (csv:from-file "extensions/csv/test/weirdlines.csv" ";") => [["this is"] ["a header"] ["whee"] ["" "one" "two" "three" ""] [1 2 3 4 5]]
+  csv:from-file "extensions/csv/test/idontexist.csv" => ERROR Extension exception: Couldn't find file: extensions/csv/test/idontexist.csv
 
 to-row
   extensions [ csv ]
@@ -51,7 +51,7 @@ to-string
 
 to-file
   extensions [ csv ]
-  O> csv:to-file "test/tmp.csv" [[1 2 3][4 5 6]]
-  csv:from-file "test/tmp.csv" => [[1 2 3] [4 5 6]]
-  O> file-delete "test/tmp.csv"
+  O> csv:to-file "extensions/csv/test/tmp.csv" [[1 2 3][4 5 6]]
+  csv:from-file "extensions/csv/test/tmp.csv" => [[1 2 3] [4 5 6]]
+  O> file-delete "extensions/csv/test/tmp.csv"
 
