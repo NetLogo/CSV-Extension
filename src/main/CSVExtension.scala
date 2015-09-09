@@ -5,6 +5,7 @@ import java.io
 import org.nlogo.nvm.ExtensionContext
 
 import scala.collection.JavaConverters._
+import scala.language.reflectiveCalls
 
 import org.nlogo.api._
 import org.nlogo.api.Syntax._

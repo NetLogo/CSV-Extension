@@ -1,4 +1,6 @@
-scalaVersion := "2.9.2"
+enablePlugins(org.nlogo.build.NetLogoExtension)
+
+scalaVersion := "2.11.7"
 
 scalaSource in Compile := baseDirectory.value / "src" / "main"
 
@@ -9,84 +11,89 @@ javaSource in Compile := baseDirectory.value / "src" / "main"
 javaSource in Test := baseDirectory.value / "src" / "test"
 
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings",
-                      "-encoding", "us-ascii")
+                      "-feature", "-encoding", "us-ascii")
 
-retrieveManaged := true
+val netLogoJarsOrDependencies =
+  Option(System.getProperty("netlogo.jar.url"))
+    .orElse(Some("http://ccl.northwestern.edu/netlogo/5.3.0/NetLogo.jar"))
+    .map { url =>
+      import java.io.File
+      import java.net.URI
+      val testsUrl = url.stripSuffix(".jar") + "-tests.jar"
+      if (url.startsWith("file:"))
+        (Seq(new File(new URI(url)), new File(new URI(testsUrl))), Seq())
+      else
+        (Seq(), Seq(
+          "org.nlogo" % "NetLogo" % "5.3.0" from url,
+          "org.nlogo" % "NetLogo-tests" % "5.3.0" % "test" from testsUrl))
+    }.get
+
+unmanagedJars in Compile ++= netLogoJarsOrDependencies._1
+
+libraryDependencies ++= netLogoJarsOrDependencies._2
+
+libraryDependencies += "org.apache.commons" % "commons-csv" % "1.0"
 
 libraryDependencies ++= Seq(
-  "org.nlogo" % "NetLogo" % "5.1.0" from
-    "http://ccl.northwestern.edu/netlogo/5.1.0/NetLogo.jar",
-    "org.apache.commons" % "commons-csv" % "1.0"
-)
-
-libraryDependencies ++= Seq(
-  "org.nlogo" % "NetLogo-tests" % "5.1.0" % "test" from
-    "http://ccl.northwestern.edu/netlogo/5.1.0/NetLogo-tests.jar",
-  "org.scalatest" %% "scalatest" % "1.8" % "test",
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test",
   "org.picocontainer" % "picocontainer" % "2.13.6" % "test",
   "asm" % "asm-all" % "3.3.1" % "test"
 )
 
-artifactName := { (_, _, _) => "csv.jar" }
+name := "csv"
 
-packageOptions +=
-  Package.ManifestAttributes(
-    ("Extension-Name", "csv"),
-    ("Class-Manager", "org.nlogo.extensions.csv.CSVExtension"),
-    ("NetLogo-Extension-API-Version", "5.0"))
+netLogoClassManager := "org.nlogo.extensions.csv.CSVExtension"
+
+netLogoZipSources := false
 
 packageBin in Compile := {
   val jar = (packageBin in Compile).value
-  val classpath = (dependencyClasspath in Runtime).value
-  val base = baseDirectory.value
-  val s = streams.value
-  IO.copyFile(jar, base / "csv.jar")
-  def pack200(name: String) {
-    Process(sys.env("JAVA_HOME") + "/bin/pack200 " +
-            "--modification-time=latest --effort=9 --strip-debug " +
-            "--no-keep-file-order --unknown-attribute=strip " +
-            name + ".pack.gz " + name).!!
-  }
-  pack200("csv.jar")
-  val libraryJarPaths =
-    classpath.files.filter{path =>
-      path.getName.endsWith(".jar") &&
-      !path.getName.startsWith("scala-library")}
-  for(path <- libraryJarPaths) {
-    IO.copyFile(path, base / path.getName)
-    pack200(path.getName)
-  }
-  if(Process("git diff --quiet --exit-code HEAD").! == 0) {
-    // copy everything thing we need for distribution in
-    // a temporary "csv" directory, which we will then zip
-    // before deleting it.
-    IO.createDirectory(base / "csv")
-    val zipExtras =
-      (libraryJarPaths.map(_.getName) :+ "csv.jar")
-        .filterNot(_ contains "NetLogo")
-        .flatMap{ jar => Seq(jar, jar + ".pack.gz") }
-    for(extra <- zipExtras)
-      IO.copyFile(base / extra, base / "csv" / extra)
-    for (dir <- Seq("alternate-netlogolite", "demo"))
-      IO.copyDirectory(base / dir, base / "csv" / dir)
-    Process("zip -r csv.zip csv").!!
-    IO.delete(base / "csv")
-  }
-  else {
-    s.log.warn("working tree not clean; no zip archive made")
-    IO.delete(base / "csv.zip")
+  val csvZip = baseDirectory.value / "csv.zip"
+  if (csvZip.exists) {
+    IO.unzip(csvZip, baseDirectory.value)
+    for (file <- (baseDirectory.value / "csv" ** "*.jar").get)
+      IO.copyFile(file, baseDirectory.value / file.getName)
+    IO.delete(baseDirectory.value / "csv")
+  } else {
+    sys.error("No zip file - csv extension not built")
   }
   jar
 }
 
+val moveToCsvDir = taskKey[Unit]("move to csv directory")
+
+val csvDirectory = settingKey[File]("directory that extension is moved to for testing")
+
+csvDirectory := {
+  baseDirectory.value / "extensions" / "csv"
+}
+
+moveToCsvDir := {
+  val csvJar = (packageBin in Compile).value
+  val base = baseDirectory.value
+  IO.createDirectory(csvDirectory.value)
+  val allDependencies =
+    Attributed.data((dependencyClasspath in Compile).value)
+  val zipExtras =
+    (allDependencies :+ csvJar)
+      .filterNot(_.getName contains "NetLogo")
+  for(extra <- zipExtras)
+    IO.copyFile(extra, csvDirectory.value / extra.getName)
+  for (dir <- Seq("alternate-netlogolite", "demo"))
+    IO.copyDirectory(base / dir, csvDirectory.value / dir)
+  val testResources = (baseDirectory.value / "test" ***).filter(_.isFile)
+  for (file <- testResources.get)
+    IO.copyFile(file, csvDirectory.value / "test" / IO.relativize(baseDirectory.value / "test", file).get)
+}
+
 test in Test := {
-  val _ = (packageBin in Compile).value
+  moveToCsvDir.value
   (test in Test).value
+  IO.delete(baseDirectory.value / "extensions")
 }
 
 cleanFiles ++= {
   val base = baseDirectory.value
   Seq(base / "csv.jar",
-      base / "csv.jar.pack.gz",
       base / "csv.zip")
 }
