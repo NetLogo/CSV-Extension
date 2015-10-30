@@ -7,6 +7,7 @@ import org.nlogo.nvm.ExtensionContext
 import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 
+import org.nlogo.core.LogoList
 import org.nlogo.api._
 import org.nlogo.api.Syntax._
 
