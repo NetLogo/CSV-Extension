@@ -9,6 +9,8 @@ import scala.language.reflectiveCalls
 
 import org.nlogo.core.LogoList
 import org.nlogo.api._
+import org.nlogo.api.Reporter
+import org.nlogo.api.Command
 import org.nlogo.api.Syntax._
 
 import org.apache.commons.csv._
@@ -32,13 +34,13 @@ class CSVExtension extends DefaultClassManager {
   def lift[T](parseItem: T => AnyRef)(row: Iterator[T]): LogoList =
     LogoList.fromIterator(row map parseItem)
 
-  case class ParserPrimitive(process: Iterator[Iterator[String]] => LogoList) extends DefaultReporter {
+  case class ParserPrimitive(process: Iterator[Iterator[String]] => LogoList) extends Reporter {
     override def getSyntax = reporterSyntax(Array(StringType | RepeatableType), ListType, 1)
     override def report(args: Array[Argument], context: Context) =
       process(parse(args(0).getString, csvFormat(args.lift(1).map(_.getString))))
   }
 
-  case class FileParserPrimitive(process: Iterator[Iterator[String]] => LogoList) extends DefaultReporter {
+  case class FileParserPrimitive(process: Iterator[Iterator[String]] => LogoList) extends Reporter {
     override def getSyntax = reporterSyntax(Array(StringType | RepeatableType), ListType, 1)
     override def report(args: Array[Argument], context: Context) = {
       val path = context.asInstanceOf[ExtensionContext].workspace.fileManager.attachPrefix(args(0).getString)
@@ -64,13 +66,13 @@ class CSVExtension extends DefaultClassManager {
 
   def fullParser(parseItem: String => AnyRef) = ParserPrimitive(lift(lift(parseItem)))
 
-  case class ToLine(dump: AnyRef => String) extends DefaultReporter {
+  case class ToLine(dump: AnyRef => String) extends Reporter {
     override def getSyntax = reporterSyntax(Array(ListType, StringType | RepeatableType), StringType, 1)
     override def report(args: Array[Argument], context: Context) =
       write(args(0).getList.scalaIterator map dump, csvFormat(args.lift(1) map (_.getString)))
   }
 
-  case class ToString(dump: AnyRef => String) extends DefaultReporter {
+  case class ToString(dump: AnyRef => String) extends Reporter {
     override def getSyntax = reporterSyntax(Array(ListType, StringType | RepeatableType), StringType, 1)
     override def report(args: Array[Argument], context: Context) = {
       val format = csvFormat(args.lift(1).map(_.getString))
@@ -80,7 +82,7 @@ class CSVExtension extends DefaultClassManager {
     }
   }
 
-  case class ToFile(dump: AnyRef => String) extends DefaultCommand {
+  case class ToFile(dump: AnyRef => String) extends Command {
     override def getSyntax = commandSyntax(Array(StringType, ListType, StringType | RepeatableType), 2)
     override def perform(args: Array[Argument], context: Context) = {
       val path = context.asInstanceOf[ExtensionContext].workspace.fileManager.attachPrefix(args(0).getString)
