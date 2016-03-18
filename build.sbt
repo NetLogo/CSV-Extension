@@ -20,26 +20,6 @@ scalaSource in Test := baseDirectory.value / "src" / "test"
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings",
                       "-feature", "-encoding", "us-ascii")
 
-val netLogoJarURL =
-  Option(System.getProperty("netlogo.jar.url")).getOrElse("http://ccl.northwestern.edu/netlogo/5.3.0/NetLogo.jar")
-
-val netLogoJarsOrDependencies = {
-  import java.io.File
-  import java.net.URI
-  val urlSegments = netLogoJarURL.split("/")
-  val lastSegment = urlSegments.last.replaceFirst("NetLogo", "NetLogo-tests")
-  val testsUrl = (urlSegments.dropRight(1) :+ lastSegment).mkString("/")
-  if (netLogoJarURL.startsWith("file:"))
-    Seq(unmanagedJars in Compile ++= Seq(
-      new File(new URI(netLogoJarURL)), new File(new URI(testsUrl))))
-  else
-    Seq(libraryDependencies ++= Seq(
-      "org.nlogo" % "NetLogo" % "5.3.0" from netLogoJarURL,
-      "org.nlogo" % "NetLogo-tests" % "5.3.0" % "test" from testsUrl))
-}
-
-netLogoJarsOrDependencies
-
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-csv"   % "1.0",
   "org.scalatest"      %% "scalatest"    % "2.2.1"  % "test",
@@ -69,3 +49,6 @@ test in Test := {
   (test in Test).value
   IO.delete(csvDirectory.value)
 }
+
+netLogoVersion := "6.0-M1"
+
