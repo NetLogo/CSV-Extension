@@ -67,6 +67,12 @@ class CSVExtension extends DefaultClassManager {
 
   def fullParser(parseItem: String => AnyRef) = ParserPrimitive(lift(lift(parseItem)))
 
+  def toListOfRows(dump: AnyRef => String, rows: LogoList): Iterator[Iterator[String]] = rows.scalaIterator.map {
+    case l: LogoList => l.scalaIterator.map(dump)
+    case x           => throw new ExtensionException(s"Expected a list of lists, but ${Dump.logoObject(x)} was one of the elements.")
+  }
+
+
   case class ToLine(dump: AnyRef => String) extends Reporter {
     override def getSyntax = reporterSyntax(
       right = List(ListType, StringType | RepeatableType),
@@ -80,9 +86,7 @@ class CSVExtension extends DefaultClassManager {
     override def getSyntax = reporterSyntax(right = List(ListType, StringType | RepeatableType), ret = StringType, defaultOption = Some(1))
     override def report(args: Array[Argument], context: Context) = {
       val format = csvFormat(args.lift(1).map(_.getString))
-      args(0).getList.scalaIterator.collect { case l: LogoList => l.scalaIterator.map(dump)}.map {
-        row: Iterator[String] => write(row, format)
-      }.mkString("\n")
+      toListOfRows(dump, args(0).getList).map(write(_, format)).mkString("\n")
     }
   }
 
@@ -93,8 +97,8 @@ class CSVExtension extends DefaultClassManager {
       val format = csvFormat(args.lift(2).map(_.getString))
       try {
         using(new PrintWriter(new io.File(path))) { writer =>
-          args(1).getList.scalaIterator.foreach {
-            case l: LogoList => writer.println(write(l.scalaIterator.map(dump), format))
+          toListOfRows(dump, args(1).getList).foreach {
+            r => writer.println(write(r, format))
           }
         }
       } catch {
