@@ -61,5 +61,12 @@ to-string-errors-on-non-list
 
 to-file-error-on-non-list
   extensions [ csv ]
-  O> csv:to-file "not-created.csv" [[1 2 3] 4 [5 6 7]] => ERROR Extension exception: Expected a list of lists, but 4 was one of the elements.
+  O> csv:to-file "incomplete.csv" [[1 2 3] 4 [5 6 7]] => ERROR Extension exception: Expected a list of lists, but 4 was one of the elements.
+  O> file-delete "incomplete.csv"
+
+to-file-partially-written-if-error
+  extensions [ csv ]
+  O> csv:to-file "incomplete.csv" [[1 2 3] 4 [5 6 7]] => ERROR Extension exception: Expected a list of lists, but 4 was one of the elements.
+  csv:from-file "incomplete.csv" => [[1 2 3]]
+  O> file-delete "incomplete.csv"
 
