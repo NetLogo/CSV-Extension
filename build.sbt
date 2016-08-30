@@ -1,6 +1,7 @@
 import org.nlogo.build.NetLogoExtension
 
 enablePlugins(NetLogoExtension)
+enablePlugins(org.nlogo.build.ExtensionDocumentationPlugin)
 
 scalaVersion := "2.11.7"
 
