@@ -12,7 +12,7 @@ If compilation succeeds, `csv.jar` will be created. This file and `commons-csv-1
 
 ### Read a file all at once
 
-Just use `csv:from-file "/path/to/myfile.csv"`! See [from-file](#from-file) for more information.
+Just use `csv:from-file "/path/to/myfile.csv"`! See [from-file](#csvfrom-file) for more information.
 
 ### Read a file one line at a time
 
@@ -58,7 +58,7 @@ end
 
 ### Write a file
 
-Just use `csv:to-file "/path/to/myfile.csv" my-data`! See [to-file](#to-file) for more information.
+Just use `csv:to-file "/path/to/myfile.csv" my-data`! See [to-file](#csvto-file) for more information.
 
 ## Primitives
 
