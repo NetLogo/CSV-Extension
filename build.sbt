@@ -3,7 +3,7 @@ import org.nlogo.build.NetLogoExtension
 enablePlugins(NetLogoExtension)
 enablePlugins(org.nlogo.build.ExtensionDocumentationPlugin)
 
-scalaVersion := "2.11.7"
+scalaVersion := "2.12.0"
 
 name := "csv"
 
@@ -23,7 +23,7 @@ scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings",
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-csv"   % "1.0",
-  "org.scalatest"      %% "scalatest"    % "2.2.1"  % "test",
+  "org.scalatest"      %% "scalatest"    % "3.0.0"  % "test",
   "org.picocontainer"  % "picocontainer" % "2.13.6" % "test",
   "org.ow2.asm"        % "asm-all"       % "5.0.3"  % "test")
 
