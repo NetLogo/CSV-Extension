@@ -67,8 +67,8 @@ class CSVExtension extends DefaultClassManager {
 
   def fullParser(parseItem: String => AnyRef) = ParserPrimitive(lift(lift(parseItem)))
 
-  def toListOfRows(dump: AnyRef => String, rows: LogoList): Iterator[Iterator[String]] = rows.scalaIterator.map {
-    case l: LogoList => l.scalaIterator.map(dump)
+  def toListOfRows(dump: AnyRef => String, rows: LogoList): Iterator[Iterator[String]] = rows.iterator.map {
+    case l: LogoList => l.iterator.map(dump)
     case x           => throw new ExtensionException(s"Expected a list of lists, but ${Dump.logoObject(x)} was one of the elements.")
   }
 
@@ -79,7 +79,7 @@ class CSVExtension extends DefaultClassManager {
       ret = StringType,
       defaultOption = Some(1))
     override def report(args: Array[Argument], context: Context) =
-      write(args(0).getList.scalaIterator map dump, csvFormat(args.lift(1) map (_.getString)))
+      write(args(0).getList.iterator map dump, csvFormat(args.lift(1) map (_.getString)))
   }
 
   case class ToString(dump: AnyRef => String) extends Reporter {
