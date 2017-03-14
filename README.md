@@ -62,6 +62,19 @@ Just use `csv:to-file "/path/to/myfile.csv" my-data`! See [to-file](#csvto-file)
 
 ## Primitives
 
+### Formatting NetLogo data as CSV
+
+[`csv:to-row`](#csvto-row)
+[`csv:to-string`](#csvto-string)
+[`csv:to-file`](#csvto-file)
+
+### Parsing CSV input to NetLogo data
+
+[`csv:from-row`](#csvfrom-row)
+[`csv:from-string`](#csvfrom-string)
+[`csv:from-file`](#csvfrom-file)
+
+
 
 ### `csv:from-row`
 
