@@ -9,7 +9,7 @@ import scala.language.reflectiveCalls
 
 import org.nlogo.core.LogoList
 import org.nlogo.api._
-import org.nlogo.core.Syntax
+import org.nlogo.core.{ NumberParser, Syntax }
 import org.nlogo.api.Reporter
 import org.nlogo.api.Command
 import org.nlogo.core.Syntax._
