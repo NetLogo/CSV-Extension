@@ -5,3 +5,4 @@ target
 *.pack.gz
 .project
 /csv/
+.bundledFiles

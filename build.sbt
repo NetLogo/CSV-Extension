@@ -39,7 +39,7 @@ moveToCsvDir := {
   (packageBin in Compile).value
   val testTarget = NetLogoExtension.directoryTarget(csvDirectory.value)
   testTarget.create(NetLogoExtension.netLogoPackagedFiles.value)
-  val testResources = (baseDirectory.value / "test" ***).filter(_.isFile)
+  val testResources = ((baseDirectory.value / "test").allPaths).filter(_.isFile)
   for (file <- testResources.get)
     IO.copyFile(file, csvDirectory.value / "test" / IO.relativize(baseDirectory.value / "test", file).get)
 }
