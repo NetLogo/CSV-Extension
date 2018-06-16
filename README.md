@@ -24,7 +24,7 @@ to-report sum-columns [ file ]
   set result csv:from-row file-read-line
   while [ not file-at-end? ] [
     let row csv:from-row file-read-line
-    set result (map [?1 + ?2] result row)
+    set result (map [ [ [col-total new-val] -> col-total + new-val] result row)
   ]
   file-close
   report result
