@@ -7,6 +7,8 @@ scalaVersion := "2.12.0"
 
 name := "csv"
 
+version := "1.1.0"
+
 netLogoClassManager := "org.nlogo.extensions.csv.CSVExtension"
 
 netLogoTarget :=
