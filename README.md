@@ -7,7 +7,8 @@ This NetLogo extension adds CSV parsing capabilities to models.
 
 Run `sbt package`.
 
-If compilation succeeds, `csv.jar` will be created. This file and `commons-csv-1.0.jar` should then be placed in a folder named `cf` in your NetLogo `extensions` directory.
+If compilation succeeds, `csv.jar` will be created. This file and `commons-csv-1.0.jar` should then be placed in a folder named `csv` in your NetLogo `extensions` directory.
+
 ## Common use cases and examples
 
 ### Read a file all at once
@@ -133,7 +134,7 @@ Different types of values can be mixed freely:
 observer> show csv:from-row "one,2,true"
 observer: ["one" 2 true]
 ```
-    
+
 
 
 ### `csv:from-string`
@@ -261,5 +262,3 @@ will result in a file `myfile.csv` containing:
 
     1,two,3
     4,5
-
-
