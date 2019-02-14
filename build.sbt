@@ -53,4 +53,4 @@ test in Test := {
   IO.delete(csvDirectory.value)
 }
 
-netLogoVersion := "6.0.2-M1"
+netLogoVersion := "6.0.4-9328ba6"
