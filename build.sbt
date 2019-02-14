@@ -3,7 +3,7 @@ import org.nlogo.build.NetLogoExtension
 enablePlugins(NetLogoExtension)
 enablePlugins(org.nlogo.build.ExtensionDocumentationPlugin)
 
-scalaVersion := "2.12.0"
+scalaVersion := "2.12.8"
 
 name := "csv"
 
