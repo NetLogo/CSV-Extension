@@ -25,6 +25,7 @@ scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings",
 
 libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-csv"   % "1.0",
+  "com.typesafe"       % "config"        % "1.3.1"  % "test",
   "org.scalatest"      %% "scalatest"    % "3.0.0"  % "test",
   "org.picocontainer"  % "picocontainer" % "2.13.6" % "test",
   "org.ow2.asm"        % "asm-all"       % "5.0.3"  % "test")
