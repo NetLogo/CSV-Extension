@@ -3,7 +3,7 @@ import org.nlogo.build.NetLogoExtension
 enablePlugins(NetLogoExtension)
 enablePlugins(org.nlogo.build.ExtensionDocumentationPlugin)
 
-scalaVersion := "2.12.8"
+scalaVersion := "2.12.12"
 
 name := "csv"
 
@@ -54,4 +54,4 @@ test in Test := {
   IO.delete(csvDirectory.value)
 }
 
-netLogoVersion := "6.1.0-RC1"
+netLogoVersion := "6.1.1-c82c397"
