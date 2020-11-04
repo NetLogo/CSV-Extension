@@ -63,11 +63,13 @@ Just use `csv:to-file "/path/to/myfile.csv" my-data`! See [to-file](#csvto-file)
 
 ## Primitives
 
+
 ### Formatting NetLogo data as CSV
 
 [`csv:to-row`](#csvto-row)
 [`csv:to-string`](#csvto-string)
 [`csv:to-file`](#csvto-file)
+
 
 ### Parsing CSV input to NetLogo data
 
@@ -81,7 +83,7 @@ Just use `csv:to-file "/path/to/myfile.csv" my-data`! See [to-file](#csvto-file)
 
 ```NetLogo
 csv:from-row string
-csv:from-row string delimiter
+(csv:from-row string delimiter)
 ```
 
 
@@ -134,14 +136,14 @@ Different types of values can be mixed freely:
 observer> show csv:from-row "one,2,true"
 observer: ["one" 2 true]
 ```
-
+    
 
 
 ### `csv:from-string`
 
 ```NetLogo
 csv:from-string string
-csv:from-string string delimiter
+(csv:from-string string delimiter)
 ```
 
 
@@ -157,7 +159,7 @@ observer: [[1 "two" 3] ["four" 5 true]]
 
 ```NetLogo
 csv:from-file csv-file
-csv:from-file csv-file delimiter
+(csv:from-file csv-file delimiter)
 ```
 
 
@@ -216,7 +218,7 @@ observer: [3 9 27]
 
 ```NetLogo
 csv:to-row list
-csv:to-row list delimiter
+(csv:to-row list delimiter)
 ```
 
 
@@ -232,7 +234,7 @@ observer: "one,2,true"
 
 ```NetLogo
 csv:to-string list
-csv:to-string list delimiter
+(csv:to-string list delimiter)
 ```
 
 
@@ -248,7 +250,7 @@ observer: "1,two,3\n4,5"
 
 ```NetLogo
 csv:to-file csv-file list
-csv:to-file csv-file list delimiter
+(csv:to-file csv-file list delimiter)
 ```
 
 
@@ -262,3 +264,5 @@ will result in a file `myfile.csv` containing:
 
     1,two,3
     4,5
+
+
