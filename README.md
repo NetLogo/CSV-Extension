@@ -82,8 +82,8 @@ Just use `csv:to-file "/path/to/myfile.csv" my-data`! See [to-file](#csvto-file)
 ### `csv:from-row`
 
 ```NetLogo
-csv:from-row string
-(csv:from-row string delimiter)
+csv:from-row *string*
+(csv:from-row *string* *delimiter*)
 ```
 
 
@@ -142,8 +142,8 @@ observer: ["one" 2 true]
 ### `csv:from-string`
 
 ```NetLogo
-csv:from-string string
-(csv:from-string string delimiter)
+csv:from-string *string*
+(csv:from-string *string* *delimiter*)
 ```
 
 
@@ -158,8 +158,8 @@ observer: [[1 "two" 3] ["four" 5 true]]
 ### `csv:from-file`
 
 ```NetLogo
-csv:from-file csv-file
-(csv:from-file csv-file delimiter)
+csv:from-file *csv-file*
+(csv:from-file *csv-file* *delimiter*)
 ```
 
 
@@ -217,8 +217,8 @@ observer: [3 9 27]
 ### `csv:to-row`
 
 ```NetLogo
-csv:to-row list
-(csv:to-row list delimiter)
+csv:to-row *list*
+(csv:to-row *list* *delimiter*)
 ```
 
 
@@ -233,8 +233,8 @@ observer: "one,2,true"
 ### `csv:to-string`
 
 ```NetLogo
-csv:to-string list
-(csv:to-string list delimiter)
+csv:to-string *list*
+(csv:to-string *list* *delimiter*)
 ```
 
 
@@ -249,8 +249,8 @@ observer: "1,two,3\n4,5"
 ### `csv:to-file`
 
 ```NetLogo
-csv:to-file csv-file list
-(csv:to-file csv-file list delimiter)
+csv:to-file *csv-file* *list*
+(csv:to-file *csv-file* *list* *delimiter*)
 ```
 
 
