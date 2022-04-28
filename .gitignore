@@ -1,8 +1,9 @@
-*.zip
-*.jar
+.bundledFiles
+target/
+/*.jar
+/*.zip
+
 *.swp
-target
 *.pack.gz
 .project
 /csv/
-.bundledFiles
