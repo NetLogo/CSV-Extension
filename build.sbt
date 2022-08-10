@@ -9,7 +9,7 @@ isSnapshot := true
 scalaVersion := "2.12.12"
 scalaSource in Compile := baseDirectory.value / "src" / "main"
 scalaSource in Test := baseDirectory.value / "src" / "test"
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings", "-feature", "-encoding", "us-ascii")
+scalacOptions ++= Seq("-deprecation", "-unchecked", "-Xfatal-warnings", "-feature", "-encoding", "us-ascii", "-release", "11")
 
 netLogoVersion := "6.2.2"
 netLogoClassManager := "org.nlogo.extensions.csv.CSVExtension"
