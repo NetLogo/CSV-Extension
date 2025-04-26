@@ -4,7 +4,7 @@ import java.io
 
 import org.nlogo.nvm.ExtensionContext
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters.IteratorHasAsScala
 import scala.language.reflectiveCalls
 
 import org.nlogo.core.LogoList
@@ -26,7 +26,7 @@ class CSVExtension extends DefaultClassManager {
 
   def write(row: Iterator[String], format: CSVFormat) = format.format(row.toSeq:_*)
 
-  def parseValue(entry: String): AnyRef = NumberParser.parse(entry).right getOrElse (entry.toUpperCase match {
+  def parseValue(entry: String): AnyRef = NumberParser.parse(entry) getOrElse (entry.toUpperCase match {
     case "TRUE"  => true:  java.lang.Boolean
     case "FALSE" => false: java.lang.Boolean
     case _       => entry
