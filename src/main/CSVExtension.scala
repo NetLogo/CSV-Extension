@@ -5,7 +5,7 @@ import java.io
 import org.nlogo.nvm.ExtensionContext
 
 import scala.jdk.CollectionConverters.IteratorHasAsScala
-import scala.language.reflectiveCalls
+import scala.reflect.Selectable.reflectiveSelectable
 
 import org.nlogo.core.LogoList
 import org.nlogo.api._
@@ -19,12 +19,12 @@ import java.io._
 
 class CSVExtension extends DefaultClassManager {
   def csvFormat(delimiter: Option[String]) =
-    (delimiter foldLeft CSVFormat.DEFAULT)(_ withDelimiter _(0))
+    (delimiter foldLeft CSVFormat.DEFAULT)(_ `withDelimiter` _(0))
 
   def parse(str: String, format: CSVFormat) =
     format.parse(new StringReader(str)).iterator.asScala map (_.iterator.asScala)
 
-  def write(row: Iterator[String], format: CSVFormat) = format.format(row.toSeq:_*)
+  def write(row: Iterator[String], format: CSVFormat) = format.format(row.toSeq*)
 
   def parseValue(entry: String): AnyRef = NumberParser.parse(entry) getOrElse (entry.toUpperCase match {
     case "TRUE"  => true:  java.lang.Boolean
@@ -109,7 +109,7 @@ class CSVExtension extends DefaultClassManager {
   }
 
   override def load(primManager: PrimitiveManager) = {
-    val add = primManager.addPrimitive _
+    val add = primManager.addPrimitive
     add("from-row", rowParser(parseValue))
     add("from-string", fullParser(parseValue))
     add("from-file", FileParserPrimitive(lift(lift(parseValue))))
