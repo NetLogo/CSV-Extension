@@ -43,16 +43,16 @@ globals [ data ]
 
 to setup
   clear-all
-  file-close-all % Close any files open from last run
+  file-close-all ; Close any files open from last run
   file-open "data.csv"
-  % other setup goes here
+  ; other setup goes here
   reset-ticks
 end
 
 to go
   if file-at-end? [ stop ]
   set data csv:from-row file-read-line
-  % model update goes here
+  ; model update goes here
   tick
 end
 ```
@@ -136,7 +136,7 @@ Different types of values can be mixed freely:
 observer> show csv:from-row "one,2,true"
 observer: ["one" 2 true]
 ```
-    
+
 
 
 ### `csv:from-string`
