@@ -1,4 +1,4 @@
-// (C) Uri Wilensky. https://github.com/NetLogo/NW-Extension
+// (C) Uri Wilensky. https://github.com/NetLogo/CSV-Extension
 
 package org.nlogo.extensions.csv
 
